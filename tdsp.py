@@ -93,11 +93,8 @@ def time_refinement(Gt, vs, ve, T):
             delta = np.min(tmp1)
         else:
             delta = np.inf
-        tmp = list()
-        for t in T:
-            if pair_i.g[t] <= pair_k.g[pair_k.tau] + delta:
-                tmp.append(t)
-        tau_i_first = np.max(tmp)
+
+        tau_i_first = np.max([t for t in T if pair_i.g[t] <= pair_k.g[pair_k.tau] + delta])
 
         for e in [e for e in Gt.edges if e[0] == pair_i.v]:
             gj_first = dict()
@@ -136,8 +133,7 @@ def path_selector(Gt, g, vs, ve, t_star):
 
 def algorithm1(Gt, vs, ve, T):
     g = time_refinement(Gt, vs, ve, T)
-
-    if sum([1 if g[ve][t] == np.inf else 0 for t in T]) == 0:
+    if sum(np.isinf(g[ve].values())) == 0:
         t_star = np.argmin([g[ve][t] - t for t in T])
         p_star = path_selector(Gt, g, vs, ve, t_star)
         return t_star, p_star

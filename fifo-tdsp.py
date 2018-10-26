@@ -1,6 +1,7 @@
 import numpy as np
 from Queue import PriorityQueue
 import matplotlib
+
 matplotlib.use("tkagg")
 
 
@@ -142,7 +143,8 @@ if __name__ == "__main__":
         return 10 if t >= 40 else 42 - 4.0 / 5.0 * t
 
 
+    T = range(0, 61)
     weights = {(1, 3): w1_3, (2, 3): w2_3, (1, 2): w1_2, (2, 4): w2_4, (3, 4): w3_4}
     Gt = Graph({1: 1, 2: 2, 3: 3, 4: 4}, [(1, 3), (2, 3), (1, 2), (2, 4), (3, 4)], weights)
 
-    print algorithm(Gt, 1, 4, range(0, 61))
+    print algorithm(Gt, 1, 4, T)

@@ -91,27 +91,33 @@ def time_refinement(Gt, vs, ve, T):
 
     times = 0
     while len(Q.queue) >= 2:
+
         print Q.queue
         times = times +1
         print times
         pair_i = Q.get()
-        print pair_i
+        print "i", pair_i
         pair_k = Q.get()
         Q.put(pair_k)
-        tmp1 = [Gt.weights[e](pair_k.g[pair_k.tau[pair_k.v]]) for e in Gt.edges if e[1] == pair_i.v]
+        print "k", pair_k
+        tmp1 = [Gt.weights[e](g[pair_k.v][tau[pair_k.v]]) for e in Gt.edges if e[1] == pair_i.v]
+        print ("tmp1",tmp1)
         if len(tmp1) > 0:
             delta = np.min(tmp1)
         else:
             delta = np.inf
 
-        tau_i_first = np.max([t for t in T if pair_i.g[t] <= pair_k.g[pair_k.tau[pair_k.v]] + delta])
+        tau_i_first = np.max([t for t in T if g[pair_i.v][t] <= (g[pair_k.v][tau[pair_k.v]] + delta)])
+        print ("tau_i_first", tau_i_first)
 
         for e in [e for e in Gt.edges if e[0] == pair_i.v]:
             print ("updating",e[0],e[1])
             gj_first = dict()
             for t in range(pair_i.tau[pair_i.v], tau_i_first + 1):
-                gj_first[t] = pair_i.g[t] + Gt.weights[e](t)
+                gj_first[t] = pair_i.g[t] + Gt.weights[e](pair_i.g[t])
+                print ("min",t,g[e[1]][t], gj_first[t])
                 g[e[1]][t] = min(g[e[1]][t], gj_first[t])
+
 
             # reorder Q
             tmpQ = PriorityQueue()
@@ -120,6 +126,12 @@ def time_refinement(Gt, vs, ve, T):
             Q = tmpQ
 
         tau[pair_i.v] = tau_i_first
+
+        print ("G dopo: ", g[1])
+        print ("G dopo: ", g[2])
+        print ("G dopo: ", g[3])
+        print ("G dopo: ", g[4])
+        print ("tau",tau)
 
         if tau[pair_i.v] >= te:
             if pair_i.v == ve:
@@ -134,17 +146,16 @@ def path_selector(Gt, g, vs, ve, t_star):
     p_star = list()
     while vj != vs:
         for e in [e for e in Gt.edges if e[1] == vj]:
-            if g[e[0]][t_star] + Gt.weights[e](t_star) == g[vj][t_star]:
+            if g[e[0]][t_star] + Gt.weights[e](g[e[0]][t_star]) == g[vj][t_star]:
                 vj = e[0]
                 break
-        p_star.append([e[0], e[1]])
+        p_star.append([e[0], e[1], g[e[1]][t_star]])
     return list(reversed(p_star))
 
 
 def algorithm1(Gt, vs, ve, T):
     g = time_refinement(Gt, vs, ve, T)
-    for g_ in g.values():
-        pd.DataFrame(g_, index=[0]).T.plot()
+
     if sum(np.isinf(g[ve].values())) == 0:
         t_star = np.argmin([g[ve][t] - t for t in T])
         p_star = path_selector(Gt, g, vs, ve, t_star)

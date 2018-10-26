@@ -26,46 +26,6 @@ class Pair(object):
     def __repr__(self):
         return str((self.v, self.tau[self.v], self.g[self.tau[self.v]]))
 
-# Given v_s and v_e and a time window T, find the best time within T to depart from v_s and the path along which one
-# can arrive at v_e with the minimum travel time
-
-# Algorithm 1
-
-# Input:
-# Gt = time dependent graph
-# vs = starting v
-# ve = destination v
-# T  = start time interval
-
-# Output
-# p_ = optimal vs-ve path
-# t_ = optimal starting time
-
-
-def w1_3(t):
-    if 0 <= t < 5:
-        return 5
-    if t >= 10:
-        return 25
-    if 5 <= t < 10:
-        return 4 * t - 15
-
-
-def w1_2(t): return 10
-
-
-def w2_3(t): return 10
-
-
-def w2_4(t): return 25
-
-
-def w3_4(t): return 10 if t >= 40 else 42 - 4.0 / 5.0 * t
-
-
-weights = {(1, 3): w1_3, (2, 3): w2_3, (1, 2): w1_2, (2, 4): w2_4, (3, 4): w3_4}
-Gt = Graph({1: 1, 2: 2, 3: 3, 4: 4}, [(1, 3), (2, 3), (1, 2), (2, 4), (3, 4)], weights)
-
 
 def time_refinement(Gt, vs, ve, T):
     ts = T[0]
@@ -130,7 +90,7 @@ def path_selector(Gt, g, vs, ve, t_star):
     return list(reversed(p_star))
 
 
-def algorithm1(Gt, vs, ve, T):
+def algorithm(Gt, vs, ve, T):
     g = time_refinement(Gt, vs, ve, T)
 
     if sum(np.isinf(g[ve].values())) == 0:
@@ -141,4 +101,48 @@ def algorithm1(Gt, vs, ve, T):
         return None
 
 
-print algorithm1(Gt, 1, 4, range(0, 61))
+if __name__ == "__main__":
+    # Given v_s and v_e and a time window T, find the best time within T to depart from v_s and the path along which one
+    # can arrive at v_e with the minimum travel time
+
+    # Algorithm 1
+
+    # Input:
+    # Gt = time dependent graph
+    # vs = starting v
+    # ve = destination v
+    # T  = start time interval
+
+    # Output
+    # p_ = optimal vs-ve path
+    # t_ = optimal starting time
+
+    def w1_3(t):
+        if 0 <= t < 5:
+            return 5
+        if t >= 10:
+            return 25
+        if 5 <= t < 10:
+            return 4 * t - 15
+
+
+    def w1_2(t):
+        return 10
+
+
+    def w2_3(t):
+        return 10
+
+
+    def w2_4(t):
+        return 25
+
+
+    def w3_4(t):
+        return 10 if t >= 40 else 42 - 4.0 / 5.0 * t
+
+
+    weights = {(1, 3): w1_3, (2, 3): w2_3, (1, 2): w1_2, (2, 4): w2_4, (3, 4): w3_4}
+    Gt = Graph({1: 1, 2: 2, 3: 3, 4: 4}, [(1, 3), (2, 3), (1, 2), (2, 4), (3, 4)], weights)
+
+    print algorithm(Gt, 1, 4, range(0, 61))

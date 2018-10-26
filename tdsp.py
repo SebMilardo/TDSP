@@ -60,7 +60,7 @@ def w2_3(t): return 10
 def w2_4(t): return 25
 
 
-def w3_4(t): return 10 if t > 40 else 41 - 4.0 / 5.0 * t
+def w3_4(t): return 10 if t >= 40 else 42 - 4.0 / 5.0 * t
 
 
 weights = {(1, 3): w1_3, (2, 3): w2_3, (1, 2): w1_2, (2, 4): w2_4, (3, 4): w3_4}
@@ -111,7 +111,6 @@ def time_refinement(Gt, vs, ve, T):
             gj_first = dict()
             for t in range(pair_i.tau[pair_i.v], tau_i_first + 1):
                 gj_first[t] = pair_i.g[t] + Gt.weights[e](t)
-            for t in range(pair_i.tau[pair_i.v], tau_i_first + 1):
                 g[e[1]][t] = min(g[e[1]][t], gj_first[t])
 
             # reorder Q

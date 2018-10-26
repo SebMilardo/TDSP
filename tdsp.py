@@ -137,8 +137,8 @@ def path_selector(Gt, g, vs, ve, t_star):
             if g[e[0]][t_star] + Gt.weights[e](t_star) == g[vj][t_star]:
                 vj = e[0]
                 break
-        p_star.append([e[0], vj])
-    return p_star
+        p_star.append([e[0], e[1]])
+    return list(reversed(p_star))
 
 
 def algorithm1(Gt, vs, ve, T):

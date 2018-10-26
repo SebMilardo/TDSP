@@ -1,6 +1,5 @@
 import numpy as np
 from Queue import PriorityQueue
-import pandas as pd
 
 
 class Graph(object):
@@ -86,9 +85,7 @@ def time_refinement(Gt, vs, ve, T):
     for p in Q_:
         Q.put(p)
 
-    times = 0
     while len(Q.queue) >= 2:
-        times = times + 1
         pair_i = Q.get()
         pair_k = Q.queue[0]
         tmp1 = [Gt.weights[e](pair_k.g[pair_k.tau]) for e in Gt.edges if e[1] == pair_i.v]
@@ -125,10 +122,6 @@ def time_refinement(Gt, vs, ve, T):
     return g
 
 
-def argmin(t, ge_t):
-    pass
-
-
 def path_selector(Gt, g, vs, ve, t_star):
     vj = ve
     p_star = list()
@@ -147,9 +140,9 @@ def algorithm1(Gt, vs, ve, T):
     if sum([1 if g[ve][t] == np.inf else 0 for t in T]) == 0:
         t_star = np.argmin([g[ve][t] - t for t in T])
         p_star = path_selector(Gt, g, vs, ve, t_star)
-        return (t_star, p_star)
+        return t_star, p_star
     else:
         return None
 
 
-print algorithm1(Gt, 1, 4, range(0, 61))
+print algorithm1(Gt, 1, 4, range(0, 60))

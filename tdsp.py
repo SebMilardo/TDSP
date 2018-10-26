@@ -2,6 +2,7 @@ import numpy as np
 from Queue import PriorityQueue
 import matplotlib
 matplotlib.use("tkagg")
+import pandas as pd
 
 class Graph(object):
     def __init__(self, vertices, edges, weights):

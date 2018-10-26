@@ -106,17 +106,20 @@ if __name__ == "__main__":
     # Given v_s and v_e and a time window T, find the best time within T to depart from v_s and the path along which one
     # can arrive at v_e with the minimum travel time
 
-    # Algorithm 1
+    # algorithm
 
     # Input:
     # Gt = time dependent graph
-    # vs = starting v
-    # ve = destination v
+    # vs = starting vertex
+    # ve = destination vertex
     # T  = start time interval
 
-    # Output
-    # p_ = optimal vs-ve path
+    # Output:
     # t_ = optimal starting time
+    # p_ = optimal vs-ve path. [vi, vj, time to reach vj]
+
+    # Weights:
+    # the weight of an edge v(i,j) depends on time t and it is defined by the function wi_j
 
     def w1_3(t):
         if 0 <= t < 5:

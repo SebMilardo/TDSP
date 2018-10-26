@@ -2,7 +2,7 @@ import numpy as np
 from Queue import PriorityQueue
 import matplotlib
 matplotlib.use("tkagg")
-import pandas as pd
+
 
 class Graph(object):
     def __init__(self, vertices, edges, weights):
@@ -89,49 +89,26 @@ def time_refinement(Gt, vs, ve, T):
     for p in Q_:
         Q.put(p)
 
-    times = 0
     while len(Q.queue) >= 2:
-
-        print Q.queue
-        times = times +1
-        print times
         pair_i = Q.get()
-        print "i", pair_i
         pair_k = Q.get()
         Q.put(pair_k)
-        print "k", pair_k
-        tmp1 = [Gt.weights[e](g[pair_k.v][tau[pair_k.v]]) for e in Gt.edges if e[1] == pair_i.v]
-        print ("tmp1",tmp1)
-        if len(tmp1) > 0:
-            delta = np.min(tmp1)
-        else:
-            delta = np.inf
-
+        tmp = [Gt.weights[e](g[pair_k.v][tau[pair_k.v]]) for e in Gt.edges if e[1] == pair_i.v]
+        delta = np.min(tmp) if len(tmp) > 0 else np.inf
         tau_i_first = np.max([t for t in T if g[pair_i.v][t] <= (g[pair_k.v][tau[pair_k.v]] + delta)])
-        print ("tau_i_first", tau_i_first)
 
         for e in [e for e in Gt.edges if e[0] == pair_i.v]:
-            print ("updating",e[0],e[1])
             gj_first = dict()
             for t in range(pair_i.tau[pair_i.v], tau_i_first + 1):
                 gj_first[t] = pair_i.g[t] + Gt.weights[e](pair_i.g[t])
-                print ("min",t,g[e[1]][t], gj_first[t])
                 g[e[1]][t] = min(g[e[1]][t], gj_first[t])
 
-
-            # reorder Q
             tmpQ = PriorityQueue()
             for p in Q.queue:
                 tmpQ.put(p)
             Q = tmpQ
 
         tau[pair_i.v] = tau_i_first
-
-        print ("G dopo: ", g[1])
-        print ("G dopo: ", g[2])
-        print ("G dopo: ", g[3])
-        print ("G dopo: ", g[4])
-        print ("tau",tau)
 
         if tau[pair_i.v] >= te:
             if pair_i.v == ve:
